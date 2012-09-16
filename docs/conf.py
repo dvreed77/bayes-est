@@ -36,9 +36,10 @@ extensions = [
     'matplotlib.sphinxext.only_directives',
     'matplotlib.sphinxext.plot_directive',        
     # 'ipython_directive',
-    'ipython_console_highlighting',
-    'inheritance_diagram',
-    'numpydoc']
+    # 'ipython_console_highlighting',
+    # 'inheritance_diagram',
+    # 'numpydoc']
+    ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
