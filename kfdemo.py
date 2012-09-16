@@ -8,7 +8,7 @@ from scipy.signal import lfilter
 
 # My estimate of the model
 def model_est():
-	dt = 1e-2
+	dt = 1e-3
 
 	A = array([[1, dt], [0, 1]])
 	# H = array([1, 0])
