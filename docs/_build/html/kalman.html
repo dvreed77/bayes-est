@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Kalman Filter &mdash; Bayesian Estimation 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Bayesian Estimation 0 documentation" href="index.html" />
+    <link rel="next" title="Things you can do with Sphinx" href="examples.html" />
+    <link rel="prev" title="Bayesian Estimation" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Things you can do with Sphinx"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Bayesian Estimation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Bayesian Estimation 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="kalman-filter">
+<span id="kalman"></span><h1>Kalman Filter<a class="headerlink" href="#kalman-filter" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="definitions">
+<h2>Definitions<a class="headerlink" href="#definitions" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><img src="_images/mathmpl/math-15c468a633.png" style="position: relative; bottom: -8px"/>:    Prior Error Covariance</div>
+<div class="line"><img src="_images/mathmpl/math-b15318bce8.png" style="position: relative; bottom: -8px"/>:    Current State Estimate</div>
+<div class="line"><img src="_images/mathmpl/math-6b9571f2ee.png" style="position: relative; bottom: -8px"/>:    Current State Estimate before update step</div>
+<div class="line"><img src="_images/mathmpl/math-2449c17196.png" style="position: relative; bottom: -3px"/>:    Measurement Matrix</div>
+<div class="line"><img src="_images/mathmpl/math-b72eacbe29.png" style="position: relative; bottom: -3px"/>:    State Matrix</div>
+<div class="line"><img src="_images/mathmpl/math-b43c97c188.png" style="position: relative; bottom: -3px"/>: Kalman Gain</div>
+</div>
+</div>
+<div class="section" id="prediction">
+<h2>Prediction<a class="headerlink" href="#prediction" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="predict-state">
+<h3>Predict State<a class="headerlink" href="#predict-state" title="Permalink to this headline">¶</a></h3>
+<img src="_images/mathmpl/math-c6a1dfab2a.png" class="center" /><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span><span class="p">,</span> <span class="n">inv</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="predict-covariance">
+<h3>Predict Covariance<a class="headerlink" href="#predict-covariance" title="Permalink to this headline">¶</a></h3>
+<img src="_images/mathmpl/math-e4757a94e7.png" class="center" /><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span><span class="p">,</span> <span class="n">inv</span>
+
+<span class="n">P</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dot</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">+</span> <span class="n">Q</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="update">
+<h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="kalman-gain">
+<h3>Kalman Gain<a class="headerlink" href="#kalman-gain" title="Permalink to this headline">¶</a></h3>
+<img src="_images/mathmpl/math-2398bff404.png" class="center" /><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span><span class="p">,</span> <span class="n">inv</span>
+
+<span class="n">S</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">dot</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">+</span> <span class="n">R</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">inv</span><span class="p">(</span><span class="n">S</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="update-estimate">
+<h3>Update Estimate<a class="headerlink" href="#update-estimate" title="Permalink to this headline">¶</a></h3>
+<img src="_images/mathmpl/math-d9a1aa7f15.png" class="center" /><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span> <span class="n">dot</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="p">(</span><span class="n">Y</span> <span class="o">-</span> <span class="n">M</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="update-covariance">
+<h3>Update Covariance<a class="headerlink" href="#update-covariance" title="Permalink to this headline">¶</a></h3>
+<img src="_images/mathmpl/math-bdf63fe7c0.png" class="center" /><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span>
+
+<span class="n">P</span> <span class="o">=</span> <span class="n">P</span> <span class="o">-</span> <span class="n">dot</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">P</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kalman Filter</a><ul>
+<li><a class="reference internal" href="#definitions">Definitions</a></li>
+<li><a class="reference internal" href="#prediction">Prediction</a><ul>
+<li><a class="reference internal" href="#predict-state">Predict State</a></li>
+<li><a class="reference internal" href="#predict-covariance">Predict Covariance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#update">Update</a><ul>
+<li><a class="reference internal" href="#kalman-gain">Kalman Gain</a></li>
+<li><a class="reference internal" href="#update-estimate">Update Estimate</a></li>
+<li><a class="reference internal" href="#update-covariance">Update Covariance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Bayesian Estimation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">Things you can do with Sphinx</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/kalman.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Things you can do with Sphinx"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Bayesian Estimation"
+             >previous</a> |</li>
+        <li><a href="index.html">Bayesian Estimation 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, David Reed.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
