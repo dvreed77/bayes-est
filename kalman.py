@@ -5,8 +5,8 @@ def kfdemo():
 
 	T = 1e-2
 	A = np.array([[1, T], [0, 1]])
-	B = np.array([(T**2)/2, T])[:, np.newaxis]
-	C = np.array([1, 0])[np.newaxis, :]
+	B = np.array([(T**2)/2, T])
+	C = np.array([[1, 0],[0, 0]])
 	# C = array([[1, 0], [0, 0]])
 
 	vara = (1e+2)**2
@@ -15,13 +15,7 @@ def kfdemo():
 	R = (1e+2)**2
 
 	n = A.shape[0]
-	m = C.shape[0]
-
-	O = np.vstack([C, C.dot(A)])
-
-	print O
-	print 'Size(O) = %ix%i' % (O.shape[0], O.shape[1])
-	print 'Rank(O) = %i' % (np.rank(O))
+	m = 2
 
 	max_iter = 2e3
 
@@ -38,23 +32,23 @@ def kfdemo():
 
 	Pp = np.diag([(1e0)**2, (1e2)**2])
 
-	xhatp = np.sqrt(Pp).dot(np.random.randn(2,1)) + x[:, 0][:, np.newaxis];
+	xhatp = x[:, 0]
 
 	# import pdb; pdb.set_trace()
 
 	for k in range(int(max_iter)):
-		w[:, k] = (B * np.sqrt(vara) * np.random.randn()).squeeze()
+		w[:, k] = B * np.sqrt(vara) * np.random.randn()
 		v[:, k] = np.sqrt(R) * np.random.randn()
 
-		x[:, k+1] = (A.dot(x[:, k][:, np.newaxis]) + w[:, k][:, np.newaxis]).squeeze()
-		y[:, k] = (C.dot(x[:, k][:, np.newaxis]) + v[:, k][:, np.newaxis]).squeeze()
+		x[:, k+1] = A.dot(x[:, k]) + w[:, k]
+		y[:, k] = C.dot(x[:, k]) + v[:, k]
 
 		K = Pp.dot(C.T) * 1./(C.dot(Pp).dot(C.T) + R)
-		xhat[:, k] = (A.dot(xhatp) + K.dot(y[:, k][:, np.newaxis] - C.dot(xhatp))).squeeze()
+		xhat[:, k] = A.dot(xhatp) + K.dot(y[:, k] - C.dot(xhatp))
 		# import pdb; pdb.set_trace()
 
 		P = (np.eye(n) - K.dot(C)).dot(Pp)
-		xhatp = A.dot(xhat[:, k][:, np.newaxis])
+		xhatp = A.dot(xhat[:, k])
 		Pp = A.dot(P).dot(A.T) + Q
 
 	fig = plt.figure()
