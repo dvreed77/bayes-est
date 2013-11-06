@@ -1,5 +1,114 @@
 import numpy as np
+import numpy.linalg as la
 import matplotlib.pyplot as plt
+
+def generate(A, B, R, vara, C, n):
+	w = []
+	v = []
+	x = [[1, 0.1]]
+	y = []
+	for k in np.arange(n):
+		w.append(B * np.sqrt(vara) * np.random.randn())
+		v.append(np.sqrt(R) * np.random.randn())
+
+		y.append(C.dot(x[-1]) + v[-1])
+		x.append(A.dot(x[-1]) + w[-1])
+
+	return np.array(x), np.array(y)
+
+class Kalman(object):
+	"""docstring for Kalman"""
+	def __init__(self, A, Q, C, Pp, R):
+		super(Kalman, self).__init__()
+		self.A = A
+		self.Q = Q
+		self.C = C
+		self.Pp = Pp
+		self.R = R
+		self.state = []
+		self.xhatp = None
+
+	def update(self, y):
+
+		C = self.C
+		Pp = self.Pp
+		R = self.R
+		A = self.A
+		if self.xhatp is None:
+			self.xhatp = y
+
+		xhatp = self.xhatp
+		# M = dot(H, X)
+		# S = dot(H, dot(P, H.T)) + R
+		# K = dot(P, dot(H.T, inv(S)))	
+		# X = X + dot(K, (Y - M))
+
+		# P = P - dot(K, dot(H, P))
+
+		# return X,P
+
+		S = C.dot(Pp).dot(C.T) + R
+
+		# K = Pp.dot(C.T) * 1./(C.dot(Pp).dot(C.T) + R)
+		self.K = Pp.dot(C.T).dot(la.inv(S))
+		self.state.append(A.dot(xhatp) + self.K.dot(y - C.dot(xhatp)))
+
+	def predict(self):
+		K = self.K
+		n = 2
+		C = self.C
+		Pp = self.Pp
+		Q = self.Q
+		A = self.A
+
+		# X = dot(A, X)
+		# P = dot(A, dot(P, A.T)) + Q
+		# return X,P
+
+		# xhatp = A.dot(xhat[:, k])
+		xhatp = A.dot(self.state[-1])
+
+		P = (np.eye(n) - K.dot(C)).dot(Pp)		
+		Pp = A.dot(P).dot(A.T) + Q
+
+		# STOP
+
+def run():
+	# timestep
+	T = 1e-2
+	# model
+	A = np.array([[1, T], [0, 1]])
+
+	# acceleration term, part of process noise
+	# the noise we are adding is a random acceleration
+	vara = (1e+2)**2
+	B = np.array([(T**2)/2, T])
+
+	# observation matrix
+	C = np.array([[1, 0],[0, 0]])
+
+	
+
+	# Q = vara*B.dot(B.T)
+	Q = vara*np.outer(B,B)
+
+	# Measurement Noise
+	R = (1e+2)**2
+
+	Pp = np.diag([(1e0)**2, (1e2)**2])
+
+	# STOP
+
+	x,y = generate(A, B, R, vara, C, 2e3)
+
+	k = Kalman(A, Q, C, Pp, R)
+
+	for ii in np.arange(2e3):
+		k.update(y[ii])
+		k.predict()
+
+	return x,y,k
+
 
 def kfdemo():
 
